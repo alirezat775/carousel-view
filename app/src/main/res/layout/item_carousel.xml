@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_width="250dp"
+              android:layout_height="250dp">
 
     <TextView
             android:layout_margin="12dp"
@@ -11,7 +11,7 @@
             android:gravity="center"
             android:textSize="22sp"
             android:id="@+id/item_text"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_width="250dp"
+            android:layout_height="250dp"/>
 
 </LinearLayout>

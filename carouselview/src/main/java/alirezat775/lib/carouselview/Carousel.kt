@@ -24,17 +24,24 @@ class Carousel constructor(
         carouselView.isAutoScroll = false
     }
 
-    fun setOrientation(@CarouselView.CarouselOrientation orientation: Int, reverseLayout: Boolean) {
+    /**
+     * @param orientation set VERTICAL/HORIZONTAL
+     * @param reverseLayout set RTL layout
+     */
+    fun setOrientation(
+        @CarouselView.CarouselOrientation orientation: Int, reverseLayout: Boolean,
+        enablePadding: Boolean = true
+    ) {
         manager = CarouselLayoutManager(appCompatActivity, orientation, reverseLayout)
         carouselView.layoutManager = manager
         val padding: Int
         when (orientation) {
             CarouselView.HORIZONTAL -> {
-                padding = ViewHelper.getScreenWidth() / 4
+                padding = if (enablePadding) ViewHelper.getScreenWidth() / 4 else 1
                 carouselView.setPadding(padding, 0, padding, 0)
             }
             CarouselView.VERTICAL -> {
-                padding = ViewHelper.getScreenHeight() / 4
+                padding = if (enablePadding) ViewHelper.getScreenHeight() / 4 else 1
                 carouselView.setPadding(0, padding, 0, padding)
             }
         }

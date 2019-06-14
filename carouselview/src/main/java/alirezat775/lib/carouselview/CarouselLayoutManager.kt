@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
  */
 class CarouselLayoutManager(context: Context?, orientation: Int, reverseLayout: Boolean) :
     LinearLayoutManager(context, orientation, reverseLayout) {
+
     private val shrinkAmount = 0.15f
     private val shrinkDistance = 0.9f
     private var smoothScroller: SmoothScroller? = null
@@ -130,7 +131,7 @@ class CarouselLayoutManager(context: Context?, orientation: Int, reverseLayout: 
 
     inner class SmoothScroller(context: Context?) : LinearSmoothScroller(context) {
 
-        private val MILLISECONDS_PER_INCH = 200f
+        private val MILLI_SECONDS_PER_INCH = 200f
         private var milliSecondsPerInch = -1f
 
         /**
@@ -171,7 +172,7 @@ class CarouselLayoutManager(context: Context?, orientation: Int, reverseLayout: 
          * @return
          */
         override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-            return (if (milliSecondsPerInch > 0) milliSecondsPerInch else MILLISECONDS_PER_INCH) / displayMetrics.densityDpi
+            return (if (milliSecondsPerInch > 0) milliSecondsPerInch else MILLI_SECONDS_PER_INCH) / displayMetrics.densityDpi
         }
     }
 }

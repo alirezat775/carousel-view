@@ -28,15 +28,6 @@ class CarouselView
 
     private var velocityTracker: VelocityTracker? = null
 
-    var anchor: Int = 0
-        set(anchor) {
-            if (this.anchor != anchor) {
-                field = anchor
-                manager.anchor = anchor
-                requestLayout()
-            }
-        }
-
     var currentPosition: Int = 0
     private var actionDown = true
     var isAutoScroll = false
@@ -45,6 +36,15 @@ class CarouselView
     private var reverseLoop = true
     private var scheduler: Scheduler? = null
     private var scrolling = true
+
+    var anchor: Int = 0
+        set(anchor) {
+            if (this.anchor != anchor) {
+                field = anchor
+                manager.anchor = anchor
+                requestLayout()
+            }
+        }
 
     /**
      * @return support RTL view
@@ -70,12 +70,6 @@ class CarouselView
         }
 
     /**
-     * @return position fit in screen for parent list
-     */
-    private val parentAnchor: Int
-        get() = (if (manager.orientation == VERTICAL) height else width) / 2
-
-    /**
      * @return layoutManager
      */
     val manager: CarouselLayoutManager
@@ -91,20 +85,14 @@ class CarouselView
     }
 
     /**
-     * initialize cardListView
+     * initialize
      */
-    @Synchronized
     private fun initSnap() {
         clipToPadding = false
         overScrollMode = View.OVER_SCROLL_NEVER
         anchor = CENTER
         addOnItemTouchListener(onItemTouchListener())
-        post {
-            scrolling(0)
-            if (isAutoScroll) {
-                getScheduler()
-            }
-        }
+        post { scrolling(0); if (isAutoScroll) getScheduler() }
     }
 
     /**
@@ -136,8 +124,8 @@ class CarouselView
     /**
      * @return onItemTouchListener for calculate velocity and position fix view center
      */
-    private fun onItemTouchListener(): RecyclerView.OnItemTouchListener {
-        return object : RecyclerView.OnItemTouchListener {
+    private fun onItemTouchListener(): OnItemTouchListener {
+        return object : OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 val action = e.actionMasked
                 when (action) {
@@ -188,13 +176,8 @@ class CarouselView
                 return false
             }
 
-            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
-
-            }
-
-            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-
-            }
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
         }
     }
 
@@ -204,10 +187,8 @@ class CarouselView
      */
     override fun onScrolled(dx: Int, dy: Int) {
         super.onScrolled(dx, dy)
-
         if (listener != null)
             listener!!.onScroll(dx, dy)
-
     }
 
     /**
@@ -223,7 +204,7 @@ class CarouselView
      */
     override fun onScrollStateChanged(state: Int) {
         super.onScrollStateChanged(state)
-        if (state == RecyclerView.SCROLL_STATE_IDLE) {
+        if (state == SCROLL_STATE_IDLE) {
             scrolling(0)
             if (isAutoScroll) {
                 getScheduler()?.start()
@@ -255,6 +236,12 @@ class CarouselView
             currentPosition = centerViewPosition
         }
     }
+
+    /**
+     * @return position fit in screen for parent list
+     */
+    private val parentAnchor: Int
+        get() = (if (manager.orientation == VERTICAL) height else width) / 2
 
     /**
      * @param view item view
@@ -295,9 +282,7 @@ class CarouselView
     inner class Scheduler(millisInFuture: Long, countDownInterval: Long) :
         CountDownTimer(millisInFuture, countDownInterval) {
 
-        override fun onTick(millisUntilFinished: Long) {
-
-        }
+        override fun onTick(millisUntilFinished: Long) {}
 
         override fun onFinish() {
             if (isLoopMode) {
@@ -324,7 +309,6 @@ class CarouselView
         //anchor default
         private val CENTER = 0
 
-        private val TAG = this::class.java.name
     }
 
     @IntDef(VERTICAL, HORIZONTAL)

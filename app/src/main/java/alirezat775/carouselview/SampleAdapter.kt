@@ -26,7 +26,7 @@ class SampleAdapter : CarouselAdapter() {
 
     override fun onBindViewHolder(holder: CarouselViewHolder, position: Int) {
         vh = holder as MyViewHolder
-        val model = getItems()[position] as MyModel
+        val model = getItems()[position] as SampleModel
         vh?.title?.text = model.getId().toString()
     }
 
