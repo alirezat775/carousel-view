@@ -16,6 +16,11 @@ import kotlinx.android.synthetic.main.item_carousel.view.*
 class SampleAdapter : CarouselAdapter() {
 
     private var vh: MyViewHolder? = null
+    var onClick: OnClick? = null
+
+    fun setOnClickListener(onClick: OnClick?) {
+        this.onClick = onClick
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CarouselViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -34,5 +39,13 @@ class SampleAdapter : CarouselAdapter() {
 
         var title: TextView = itemView.item_text
 
+        init {
+            title.setOnClickListener { v -> onClick?.click(getItems()[adapterPosition] as SampleModel) }
+        }
+
+    }
+
+    interface OnClick {
+        fun click(model: SampleModel)
     }
 }

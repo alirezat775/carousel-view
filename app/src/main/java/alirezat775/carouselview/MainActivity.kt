@@ -21,6 +21,11 @@ class MainActivity : AppCompatActivity() {
         carousel.setOrientation(CarouselView.HORIZONTAL, false)
         carousel.autoScroll(true, 5000, true)
         carousel.scaleView(true)
+        adapter.setOnClickListener(object : SampleAdapter.OnClick {
+            override fun click(item: SampleModel) {
+                carousel.remove(item)
+            }
+        })
 //        carousel.scrollSpeed(100f)
 //        carousel.enableSlider(true)
 
