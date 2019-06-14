@@ -7,5 +7,5 @@ package alirezat775.lib.carouselview
  * Email:   alirezat775@gmail.com
  */
 
-class CarouselModel {
+open class CarouselModel {
 }

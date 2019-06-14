@@ -9,8 +9,6 @@ import android.view.View
 import androidx.annotation.IntDef
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
 
 
 /**
@@ -327,7 +325,6 @@ class CarouselView @JvmOverloads constructor(
         }
     }
 
-
     interface CarouselListener {
 
         /**
@@ -342,8 +339,7 @@ class CarouselView @JvmOverloads constructor(
         fun onScroll(dx: Int, dy: Int)
     }
 
-
     @IntDef(VERTICAL, HORIZONTAL)
-    @Retention(RetentionPolicy.SOURCE)
+    @Retention(AnnotationRetention.SOURCE)
     annotation class CarouselOrientation
 }

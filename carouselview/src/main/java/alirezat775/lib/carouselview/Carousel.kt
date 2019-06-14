@@ -51,7 +51,7 @@ class Carousel constructor(
      * @return CarouselLayoutManager
      */
     private fun getManager(): CarouselLayoutManager? {
-        if (manager == null) throw NullPointerException("please call setOrientation method")
+        if (manager == null) setOrientation(CarouselView.VERTICAL, false)
         return manager
     }
 
@@ -119,7 +119,10 @@ class Carousel constructor(
      * @param enableSlider enable slider mode
      */
     fun enableSlider(enableSlider: Boolean) {
-        adapter.enableSlider(enableSlider)
+        if (getManager()?.orientation == CarouselView.VERTICAL)
+            throw IllegalStateException("for using slider mode, orientation must be is HORIZONTAL")
+        else
+            adapter.enableSlider(enableSlider)
     }
 
 }

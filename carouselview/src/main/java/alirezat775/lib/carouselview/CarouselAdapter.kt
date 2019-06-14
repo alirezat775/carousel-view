@@ -82,7 +82,7 @@ abstract class CarouselAdapter : RecyclerView.Adapter<CarouselAdapter.CarouselVi
         this.enableSlider = enableSlider
     }
 
-    inner class CarouselViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    open inner class CarouselViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         init {
             if (isEnableSlider()) imageOption(itemView)
         }
