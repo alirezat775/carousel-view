@@ -5,7 +5,7 @@ package alirezat775.lib.carouselview
  * Date:    12/22/17
  * Email:   alirezat775@gmail.com
  */
-interface RosterListener {
+interface CarouselListener {
     /**
      * @param position current position
      */

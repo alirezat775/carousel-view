@@ -1,12 +1,16 @@
 package alirezat775.carouselview
 
 import alirezat775.lib.carouselview.Carousel
+import alirezat775.lib.carouselview.CarouselListener
 import alirezat775.lib.carouselview.CarouselView
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    val TAG: String = this::class.java.name
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,7 +21,18 @@ class MainActivity : AppCompatActivity() {
         carousel.setOrientation(CarouselView.HORIZONTAL, false)
         carousel.autoScroll(true, 5000, true)
         carousel.scaleView(true)
+//        carousel.scrollSpeed(100f)
 //        carousel.enableSlider(true)
+
+        carousel.addCarouselListener(object : CarouselListener {
+            override fun onPositionChange(position: Int) {
+                Log.d(TAG, "currentPosition : $position")
+            }
+
+            override fun onScroll(dx: Int, dy: Int) {
+                Log.d(TAG, "onScroll dx : $dx -- dy : $dx")
+            }
+        })
 
         carousel.add(SampleModel(1))
         carousel.add(SampleModel(2))

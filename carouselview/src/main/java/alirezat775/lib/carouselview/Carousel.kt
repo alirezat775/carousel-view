@@ -47,6 +47,10 @@ class Carousel constructor(
         }
     }
 
+    fun addCarouselListener(listener: CarouselListener) {
+        carouselView.listener = listener
+    }
+
     /**
      * @param scaleView enable scaleView item
      */
@@ -130,6 +134,13 @@ class Carousel constructor(
             throw IllegalStateException("for using slider mode, orientation must be is HORIZONTAL")
         else
             adapter.enableSlider(enableSlider)
+    }
+
+    /**
+     * @param scrollSpeed change speed scrolling item
+     */
+    fun scrollSpeed(scrollSpeed: Float) {
+        getManager()?.setScrollSpeed(scrollSpeed)
     }
 
 }

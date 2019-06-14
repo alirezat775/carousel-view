@@ -129,16 +129,13 @@ class CarouselLayoutManager(context: Context?, orientation: Int, reverseLayout: 
         startSmoothScroll(smoothScroller)
     }
 
-    inner class SmoothScroller(context: Context?) : LinearSmoothScroller(context) {
-
-        private val MILLI_SECONDS_PER_INCH = 200f
-        private var milliSecondsPerInch = -1f
+    inner class SmoothScroller(context: Context?, private var speed: Float = 150f) : LinearSmoothScroller(context) {
 
         /**
          * @param scrollSpeed milliSecond per inch
          */
         fun setScrollSpeed(scrollSpeed: Float) {
-            this.milliSecondsPerInch = scrollSpeed
+            speed = scrollSpeed
         }
 
         /**
@@ -172,7 +169,7 @@ class CarouselLayoutManager(context: Context?, orientation: Int, reverseLayout: 
          * @return
          */
         override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-            return (if (milliSecondsPerInch > 0) milliSecondsPerInch else MILLI_SECONDS_PER_INCH) / displayMetrics.densityDpi
+            return speed / displayMetrics.densityDpi;
         }
     }
 }

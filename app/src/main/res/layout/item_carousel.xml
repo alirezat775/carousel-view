@@ -6,12 +6,12 @@
 
     <TextView
             android:layout_margin="12dp"
-            android:textColor="@color/colorAccent"
+            android:textColor="@android:color/white"
             android:background="@color/colorPrimary"
             android:gravity="center"
             android:textSize="22sp"
             android:id="@+id/item_text"
-            android:layout_width="250dp"
-            android:layout_height="250dp"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
 </LinearLayout>

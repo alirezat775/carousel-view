@@ -8,6 +8,7 @@ import android.view.VelocityTracker
 import android.view.View
 import androidx.annotation.IntDef
 import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 
 /**
@@ -24,7 +25,7 @@ class CarouselView
 @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
     RecyclerView(context, attrs, defStyle) {
 
-    var listener: RosterListener? = null
+    var listener: CarouselListener? = null
 
     private var velocityTracker: VelocityTracker? = null
 
@@ -57,13 +58,13 @@ class CarouselView
      */
     private val isTrustLayout: Boolean
         get() {
-            if (isRTL && manager.getReverseLayout()) {
+            if (isRTL && manager.reverseLayout) {
                 return true
-            } else if (!isRTL && manager.getReverseLayout()) {
+            } else if (!isRTL && manager.reverseLayout) {
                 return false
-            } else if (isRTL && !manager.getReverseLayout()) {
+            } else if (isRTL && !manager.reverseLayout) {
                 return false
-            } else if (!isRTL && !manager.getReverseLayout()) {
+            } else if (!isRTL && !manager.reverseLayout) {
                 return true
             }
             return false
