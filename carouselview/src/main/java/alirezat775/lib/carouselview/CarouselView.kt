@@ -10,127 +10,109 @@ import androidx.annotation.IntDef
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 
-
 /**
  * Author:  Alireza Tizfahm Fard
- * Date:    2019-06-14
+ * Date:    12/7/17
  * Email:   alirezat775@gmail.com
  */
+class CarouselView
+/**
+ * @param context  current context, will be used to access resources
+ * @param attrs    attributeSet
+ * @param defStyle defStyle
+ */
+@JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
+    RecyclerView(context, attrs, defStyle) {
 
-class CarouselView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : RecyclerView(context, attrs, defStyleAttr) {
+    var listener: RosterListener? = null
 
-    companion object {
-        //carousel orientation
-        const val HORIZONTAL = 0
-        const val VERTICAL = 1
-    }
-
-    private var listener: CarouselListener? = null
     private var velocityTracker: VelocityTracker? = null
-    private var currentPosition: Int = 0
+
+    var anchor: Int = 0
+        set(anchor) {
+            if (this.anchor != anchor) {
+                field = anchor
+                manager.anchor = anchor
+                requestLayout()
+            }
+        }
+
+    var currentPosition: Int = 0
     private var actionDown = true
-    private var autoScroll = false
-    private var loopMode: Boolean = false
-    private var delayMillis: Long = 5000
+    var isAutoScroll = false
+    var isLoopMode: Boolean = false
+    var delayMillis: Long = 5000
     private var reverseLoop = true
     private var scheduler: Scheduler? = null
     private var scrolling = true
 
+    /**
+     * @return support RTL view
+     */
+    private val isRTL: Boolean
+        get() = ViewCompat.getLayoutDirection(this@CarouselView) == ViewCompat.LAYOUT_DIRECTION_RTL
+
+    /**
+     * @return support RTL view
+     */
+    private val isTrustLayout: Boolean
+        get() {
+            if (isRTL && manager.getReverseLayout()) {
+                return true
+            } else if (!isRTL && manager.getReverseLayout()) {
+                return false
+            } else if (isRTL && !manager.getReverseLayout()) {
+                return false
+            } else if (!isRTL && !manager.getReverseLayout()) {
+                return true
+            }
+            return false
+        }
+
+    /**
+     * @return position fit in screen for parent list
+     */
+    private val parentAnchor: Int
+        get() = (if (manager.orientation == VERTICAL) height else width) / 2
+
+    /**
+     * @return layoutManager
+     */
+    val manager: CarouselLayoutManager
+        get() = layoutManager as CarouselLayoutManager
+
+    /**
+     * @param adapter the new adapter to set, or null to set no adapter
+     */
     override fun setAdapter(adapter: Adapter<*>?) {
         super.setAdapter(adapter)
-        if (adapter?.itemCount!! >= 0)
+        if (adapter!!.itemCount >= 0)
             initSnap()
     }
 
+    /**
+     * initialize cardListView
+     */
+    @Synchronized
     private fun initSnap() {
         clipToPadding = false
         overScrollMode = View.OVER_SCROLL_NEVER
+        anchor = CENTER
         addOnItemTouchListener(onItemTouchListener())
         post {
             scrolling(0)
-            if (isAutoScroll()) {
+            if (isAutoScroll) {
                 getScheduler()
             }
         }
     }
 
     /**
-     * @param positionPlus scroll to new position from previous position
-     */
-    fun scrolling(positionPlus: Int) {
-        if (calculateSnapViewPosition() > -1) {
-            var centerViewPosition = calculateSnapViewPosition() + positionPlus
-            if (centerViewPosition <= 0)
-                centerViewPosition = 0
-            else if (centerViewPosition >= adapter!!.itemCount - 1)
-                centerViewPosition = adapter!!.itemCount - 1
-
-            smoothScrollToPosition(centerViewPosition)
-            getListener()?.onPositionChange(centerViewPosition)
-            currentPosition(centerViewPosition)
-        }
-    }
-
-    fun addListener(listener: CarouselListener) {
-        this.listener = listener
-    }
-
-    private fun getListener(): CarouselListener? {
-        return listener
-    }
-
-    /**
-     * @return calculate snapping position relation anchor
-     */
-    private fun calculateSnapViewPosition(): Int {
-        val parentAnchor = getParentAnchor()
-        val lastVisibleItemPosition = getManager().findLastVisibleItemPosition()
-        val firstVisibleItemPosition = getManager().findFirstVisibleItemPosition()
-
-        if (firstVisibleItemPosition > -1) {
-            val currentViewClosestToAnchor = getManager().findViewByPosition(firstVisibleItemPosition)
-            var currentViewClosestToAnchorDistance = parentAnchor - getViewAnchor(currentViewClosestToAnchor)
-            var currentViewClosestToAnchorPosition = firstVisibleItemPosition
-
-            for (i in firstVisibleItemPosition + 1..lastVisibleItemPosition) {
-                val view = getManager().findViewByPosition(i)
-                val distanceToCenter = parentAnchor - getViewAnchor(view)
-                if (Math.abs(distanceToCenter) < Math.abs(currentViewClosestToAnchorDistance)) {
-                    currentViewClosestToAnchorPosition = i
-                    currentViewClosestToAnchorDistance = distanceToCenter
-                }
-            }
-            return currentViewClosestToAnchorPosition
-        } else {
-            return -1
-        }
-    }
-
-    /**
-     * @return position fit in screen for parent list
-     */
-    private fun getParentAnchor(): Int {
-        return (if (getManager().orientation == VERTICAL) height else width) / 2
-    }
-
-    /**
-     * @param view item view
-     * @return position fit in screen specific view in parent
-     */
-    private fun getViewAnchor(view: View?): Int {
-        return if (getManager().orientation == VERTICAL) view?.top!! + view.height / 2
-        else view?.left!! + view.width / 2
-    }
-
-
-    /**
      * @return scheduler scroll item
      */
     private fun getScheduler(): Scheduler? {
         if (scheduler == null) {
-            scheduler = Scheduler(getDelayMillis(), 1)
+            scheduler = Scheduler(delayMillis, 1)
         }
         return scheduler
     }
@@ -152,97 +134,10 @@ class CarouselView @JvmOverloads constructor(
     }
 
     /**
-     * @return support RTL view
-     */
-    private fun isRTL(): Boolean {
-        return ViewCompat.getLayoutDirection(this) == ViewCompat.LAYOUT_DIRECTION_RTL
-    }
-
-    /**
-     * @return support RTL view
-     */
-    private fun isTrustLayout(): Boolean {
-        if (isRTL() && getManager().reverseLayout) {
-            return true
-        } else if (!isRTL() && getManager().reverseLayout) {
-            return false
-        } else if (isRTL() && !getManager().reverseLayout) {
-            return false
-        } else if (!isRTL() && !getManager().reverseLayout) {
-            return true
-        }
-        return false
-    }
-
-    /**
-     * @return current item position
-     */
-    fun getCurrentPosition(): Int {
-        return currentPosition
-    }
-
-    /**
-     * @param currentPosition go to specific position
-     */
-    fun currentPosition(currentPosition: Int) {
-        this.currentPosition = currentPosition
-    }
-
-    /**
-     * @return layoutManager
-     */
-    fun getManager(): CarouselLayoutManager {
-        return (layoutManager as CarouselLayoutManager?)!!
-    }
-
-    /**
-     * @return enable/disable auto scrolling
-     */
-    private fun isAutoScroll(): Boolean {
-        return autoScroll
-    }
-
-    /**
-     * @param autoScroll enable/disable auto scrolling
-     */
-    fun autoScroll(autoScroll: Boolean) {
-        this.autoScroll = autoScroll
-    }
-
-    /**
-     * @return change position with delay time
-     */
-    private fun getDelayMillis(): Long {
-        return delayMillis
-    }
-
-    /**
-     * @param delayMillis for change position
-     */
-    fun delayMillis(delayMillis: Long) {
-        this.delayMillis = delayMillis
-    }
-
-    /**
-     * @return loop mode scrolling
-     */
-    fun isLoopMode(): Boolean {
-        return loopMode
-    }
-
-    /**
-     * @param loopMode
-     */
-    fun loopMode(loopMode: Boolean) {
-        this.loopMode = loopMode
-    }
-
-
-    /**
      * @return onItemTouchListener for calculate velocity and position fix view center
      */
-    private fun onItemTouchListener(): OnItemTouchListener {
-        return object : OnItemTouchListener {
+    private fun onItemTouchListener(): RecyclerView.OnItemTouchListener {
+        return object : RecyclerView.OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 val action = e.actionMasked
                 when (action) {
@@ -251,43 +146,43 @@ class CarouselView @JvmOverloads constructor(
                         if (velocityTracker == null) {
                             velocityTracker = VelocityTracker.obtain()
                         } else {
-                            velocityTracker?.clear()
+                            velocityTracker!!.clear()
                         }
-                        velocityTracker?.addMovement(e)
+                        velocityTracker!!.addMovement(e)
                     } else {
-                        velocityTracker?.addMovement(e)
-                        velocityTracker?.computeCurrentVelocity(1000)
+                        velocityTracker!!.addMovement(e)
+                        velocityTracker!!.computeCurrentVelocity(1000)
                     }
                     MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                         actionDown = true
-
-                        when (getManager().orientation) {
-                            HORIZONTAL -> if (velocityTracker?.xVelocity!! <= 0) {
-                                if (!isTrustLayout())
-                                    scrolling(-1)// rtl or reverse mode
-                                else
-                                    scrolling(1)//scroll to right
-                            } else if (velocityTracker?.xVelocity!! > 0) {
-                                if (!isTrustLayout())
-                                    scrolling(1)// rtl or reverse mode
-                                else
-                                    scrolling(-1)//scroll to left
+                        if (velocityTracker != null) {
+                            when (manager.orientation) {
+                                HORIZONTAL -> if (velocityTracker!!.xVelocity <= 0) {
+                                    if (!isTrustLayout)
+                                        scrolling(-1)// rtl or reverse mode
+                                    else
+                                        scrolling(1)//scroll to right
+                                } else if (velocityTracker!!.xVelocity > 0) {
+                                    if (!isTrustLayout)
+                                        scrolling(1)// rtl or reverse mode
+                                    else
+                                        scrolling(-1)//scroll to left
+                                }
+                                VERTICAL -> if (velocityTracker!!.yVelocity <= 0) {
+                                    if (manager.getReverseLayout())
+                                        scrolling(-1)// rtl or reverse mode
+                                    else
+                                        scrolling(1)//scroll to up
+                                } else if (velocityTracker!!.yVelocity > 0) {
+                                    if (manager.getReverseLayout())
+                                        scrolling(1)// rtl or reverse mode
+                                    else
+                                        scrolling(-1)//scroll to down
+                                }
                             }
-                            VERTICAL -> if (velocityTracker?.yVelocity!! <= 0) {
-                                if (getManager().reverseLayout)
-                                    scrolling(-1)// rtl or reverse mode
-                                else
-                                    scrolling(1)//scroll to up
-                            } else if (velocityTracker?.yVelocity!! > 0) {
-                                if (getManager().reverseLayout)
-                                    scrolling(1)// rtl or reverse mode
-                                else
-                                    scrolling(-1)//scroll to down
-                            }
+                            velocityTracker!!.recycle()
+                            velocityTracker = null
                         }
-                        velocityTracker?.recycle()
-                        velocityTracker = null
-
                     }
                 }
                 return false
@@ -303,21 +198,116 @@ class CarouselView @JvmOverloads constructor(
         }
     }
 
+    /**
+     * @param dx delta x
+     * @param dy delta y
+     */
+    override fun onScrolled(dx: Int, dy: Int) {
+        super.onScrolled(dx, dy)
+
+        if (listener != null)
+            listener!!.onScroll(dx, dy)
+
+    }
+
+    /**
+     * @param position scrolling to specific position
+     */
+    override fun scrollToPosition(position: Int) {
+        super.scrollToPosition(position)
+        post { smoothScrollToPosition(position) }
+    }
+
+    /**
+     * @param state called when the scroll state of this RecyclerView changes
+     */
+    override fun onScrollStateChanged(state: Int) {
+        super.onScrollStateChanged(state)
+        if (state == RecyclerView.SCROLL_STATE_IDLE) {
+            scrolling(0)
+            if (isAutoScroll) {
+                getScheduler()?.start()
+            }
+
+            if (currentPosition == 0)
+                reverseLoop = true
+            else if (currentPosition == adapter!!.itemCount - 1)
+                reverseLoop = false
+        }
+    }
+
+    /**
+     * @param positionPlus scroll to new position from previous position
+     */
+    fun scrolling(positionPlus: Int) {
+        if (calculateSnapViewPosition() > -1) {
+            var centerViewPosition = calculateSnapViewPosition() + positionPlus
+            if (centerViewPosition <= 0)
+                centerViewPosition = 0
+            else if (centerViewPosition >= adapter!!.itemCount - 1)
+                centerViewPosition = adapter!!.itemCount - 1
+
+            smoothScrollToPosition(centerViewPosition)
+
+            if (listener != null)
+                listener!!.onPositionChange(centerViewPosition)
+
+            currentPosition = centerViewPosition
+        }
+    }
+
+    /**
+     * @param view item view
+     * @return position fit in screen specific view in parent
+     */
+    private fun getViewAnchor(view: View?): Int {
+        return if (manager.orientation == VERTICAL) view?.top!! + view.height / 2
+        else view?.left!! + view.width / 2
+    }
+
+    /**
+     * @return calculate snapping position relation anchor
+     */
+    private fun calculateSnapViewPosition(): Int {
+        val parentAnchor = parentAnchor
+        val lastVisibleItemPosition = manager.findLastVisibleItemPosition()
+        val firstVisibleItemPosition = manager.findFirstVisibleItemPosition()
+
+        if (firstVisibleItemPosition > -1) {
+            val currentViewClosestToAnchor = manager.findViewByPosition(firstVisibleItemPosition)
+            var currentViewClosestToAnchorDistance = parentAnchor - getViewAnchor(currentViewClosestToAnchor)
+            var currentViewClosestToAnchorPosition = firstVisibleItemPosition
+
+            for (i in firstVisibleItemPosition + 1..lastVisibleItemPosition) {
+                val view = manager.findViewByPosition(i)
+                val distanceToCenter = parentAnchor - getViewAnchor(view)
+                if (Math.abs(distanceToCenter) < Math.abs(currentViewClosestToAnchorDistance)) {
+                    currentViewClosestToAnchorPosition = i
+                    currentViewClosestToAnchorDistance = distanceToCenter
+                }
+            }
+            return currentViewClosestToAnchorPosition
+        } else {
+            return -1
+        }
+    }
+
     inner class Scheduler(millisInFuture: Long, countDownInterval: Long) :
         CountDownTimer(millisInFuture, countDownInterval) {
 
         override fun onTick(millisUntilFinished: Long) {
+
         }
 
         override fun onFinish() {
-            if (isLoopMode()) {
+            if (isLoopMode) {
                 if (reverseLoop)
                     scrolling(+1)
                 else
                     scrolling(-1)
 
             } else {
-                if (getCurrentPosition() >= adapter!!.itemCount - 1)
+                if (currentPosition >= adapter!!.itemCount - 1)
                     scrollToPosition(0)
             }
             cancel()
@@ -325,18 +315,16 @@ class CarouselView @JvmOverloads constructor(
         }
     }
 
-    interface CarouselListener {
+    companion object {
 
-        /**
-         * @param position current position
-         */
-        fun onPositionChange(position: Int)
+        //carousel orientation
+        const val HORIZONTAL = 0
+        const val VERTICAL = 1
 
-        /**
-         * @param dx delta x
-         * @param dy delta y
-         */
-        fun onScroll(dx: Int, dy: Int)
+        //anchor default
+        private val CENTER = 0
+
+        private val TAG = this::class.java.name
     }
 
     @IntDef(VERTICAL, HORIZONTAL)

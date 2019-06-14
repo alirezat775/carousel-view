@@ -21,7 +21,7 @@ class Carousel constructor(
     init {
         carouselView.layoutManager = getManager()
         carouselView.adapter = adapter
-        carouselView.autoScroll(false)
+        carouselView.isAutoScroll = false
     }
 
     fun setOrientation(@CarouselView.CarouselOrientation orientation: Int, reverseLayout: Boolean) {
@@ -87,7 +87,7 @@ class Carousel constructor(
      * @return current item position
      */
     fun getCurrentPosition(): Int {
-        return carouselView.getCurrentPosition()
+        return carouselView.currentPosition
     }
 
     /**
@@ -110,9 +110,9 @@ class Carousel constructor(
      * @param loopMode
      */
     fun autoScroll(autoScroll: Boolean, delayMillis: Long, loopMode: Boolean) {
-        carouselView.autoScroll(autoScroll)
-        carouselView.delayMillis(delayMillis)
-        carouselView.loopMode(loopMode)
+        carouselView.isAutoScroll = autoScroll
+        carouselView.delayMillis = delayMillis
+        carouselView.isLoopMode = loopMode
     }
 
     /**

@@ -7,23 +7,36 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 
-
 /**
  * Author:  Alireza Tizfahm Fard
- * Date:    2019-06-14
+ * Date:    12/7/17
  * Email:   alirezat775@gmail.com
  */
-
-class CarouselLayoutManager(private val context: Context?, orientation: Int, reverseLayout: Boolean) :
+class CarouselLayoutManager(context: Context?, orientation: Int, reverseLayout: Boolean) :
     LinearLayoutManager(context, orientation, reverseLayout) {
-
     private val shrinkAmount = 0.15f
     private val shrinkDistance = 0.9f
-    private var smoothScroller: SmoothScroller
+    private var smoothScroller: SmoothScroller? = null
+
+    var anchor: Int = 0
+
     private var scaleView = true
 
     init {
-        smoothScroller = SmoothScroller()
+        if (smoothScroller == null) {
+            smoothScroller = SmoothScroller(context)
+        }
+    }
+
+    /**
+     * @param scaleView set center view scale
+     */
+    fun scaleView(scaleView: Boolean) {
+        this.scaleView = scaleView
+    }
+
+    private fun isScaleView(): Boolean {
+        return scaleView
     }
 
     /**
@@ -44,7 +57,7 @@ class CarouselLayoutManager(private val context: Context?, orientation: Int, rev
      */
     override fun scrollVerticallyBy(dy: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?): Int {
         val orientation = orientation
-        if (orientation == LinearLayoutManager.VERTICAL) {
+        if (orientation == VERTICAL) {
             val scrolled = super.scrollVerticallyBy(dy, recycler, state)
             if (isScaleView()) {
                 val midpoint = height / 2f
@@ -75,7 +88,7 @@ class CarouselLayoutManager(private val context: Context?, orientation: Int, rev
      */
     override fun scrollHorizontallyBy(dx: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?): Int {
         val orientation = orientation
-        if (orientation == LinearLayoutManager.HORIZONTAL) {
+        if (orientation == HORIZONTAL) {
             val scrolled = super.scrollHorizontallyBy(dx, recycler, state)
             if (isScaleView()) {
                 val midpoint = width / 2f
@@ -99,18 +112,10 @@ class CarouselLayoutManager(private val context: Context?, orientation: Int, rev
     }
 
     /**
-     * @return center view scale
+     * @param scrollSpeed milliSecond per inch
      */
-
-    private fun isScaleView(): Boolean {
-        return scaleView
-    }
-
-    /**
-     * @param scaleView set center view scale
-     */
-    fun scaleView(scaleView: Boolean) {
-        this.scaleView = scaleView
+    fun setScrollSpeed(scrollSpeed: Float) {
+        smoothScroller!!.setScrollSpeed(scrollSpeed)
     }
 
     /**
@@ -119,20 +124,19 @@ class CarouselLayoutManager(private val context: Context?, orientation: Int, rev
      * @param position
      */
     override fun smoothScrollToPosition(recyclerView: RecyclerView, state: RecyclerView.State?, position: Int) {
-        smoothScroller.targetPosition = position
+        smoothScroller!!.targetPosition = position
         startSmoothScroll(smoothScroller)
     }
 
-    inner class SmoothScroller : LinearSmoothScroller(context) {
+    inner class SmoothScroller(context: Context?) : LinearSmoothScroller(context) {
 
-        //scrolling speed
         private val MILLISECONDS_PER_INCH = 200f
         private var milliSecondsPerInch = -1f
 
         /**
          * @param scrollSpeed milliSecond per inch
          */
-        fun scrollSpeed(scrollSpeed: Float) {
+        fun setScrollSpeed(scrollSpeed: Float) {
             this.milliSecondsPerInch = scrollSpeed
         }
 
