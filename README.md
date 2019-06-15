@@ -27,8 +27,4 @@ add to module build.gradle
 
 ```
 
-
-
-
-
-![demo](https://raw.githubusercontent.com/alirezat775/CarouselView/master/assets/demo.gif)
+<img src="https://raw.githubusercontent.com/alirezat775/CarouselView/master/assets/demo.gif" width="200" height="400" />

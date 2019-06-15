@@ -1,0 +1,7 @@
+CarouselView 1.0.0 Released!
+
+- showing horizontal and vertical
+- auto scrolling (with pause/resume)
+- change listener scrolling
+- slider mode/ carousel mode
+- change scrolling speed
