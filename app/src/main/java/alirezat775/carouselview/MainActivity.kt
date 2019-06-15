@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+//        carousel.add(EmptySampleModel("empty list"))
         carousel.add(SampleModel(1))
         carousel.add(SampleModel(2))
         carousel.add(SampleModel(3))
