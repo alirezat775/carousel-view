@@ -22,8 +22,8 @@ class MainActivity : AppCompatActivity() {
         carousel.autoScroll(true, 5000, true)
         carousel.scaleView(true)
         adapter.setOnClickListener(object : SampleAdapter.OnClick {
-            override fun click(item: SampleModel) {
-                carousel.remove(item)
+            override fun click(model: SampleModel) {
+                carousel.remove(model)
             }
         })
 //        carousel.scrollSpeed(100f)

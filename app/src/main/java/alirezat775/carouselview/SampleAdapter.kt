@@ -40,7 +40,7 @@ class SampleAdapter : CarouselAdapter() {
         var title: TextView = itemView.item_text
 
         init {
-            title.setOnClickListener { v -> onClick?.click(getItems()[adapterPosition] as SampleModel) }
+            title.setOnClickListener { onClick?.click(getItems()[adapterPosition] as SampleModel) }
         }
 
     }
