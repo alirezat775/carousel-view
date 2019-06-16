@@ -23,7 +23,7 @@ add to root build.gradle
 add to module build.gradle
 ```groovy
 
-    implementation 'com.github.alirezat775:CarouselView:1.0.0'
+    implementation 'com.github.alirezat775:carousel-view:1.0.0'
 
 ```
 
