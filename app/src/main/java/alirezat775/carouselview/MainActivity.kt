@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: CarouselView) {
                 if (hasNextPage) {
                     Log.d(TAG, "load new item on lazy mode")
-                    carousel.add(SampleModel(10))
                     carousel.add(SampleModel(11))
                     carousel.add(SampleModel(12))
                     carousel.add(SampleModel(13))
