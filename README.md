@@ -9,6 +9,10 @@ Options
 - change listener scrolling
 - slider mode/ carousel mode
 - change scrolling speed
+ 
+### Issue
+- [bug report](.github/ISSUE_TEMPLATE/bug_report.md)
+- [feature request](.github/ISSUE_TEMPLATE/feature_request.md)
 
 
 ### Usage
@@ -23,7 +27,7 @@ add to root build.gradle
 add to module build.gradle
 ```groovy
 
-    implementation 'com.github.alirezat775:carousel-view:1.0.0'
+    implementation 'com.github.alirezat775:carousel-view:{latest-version}'
 
 ```
 
