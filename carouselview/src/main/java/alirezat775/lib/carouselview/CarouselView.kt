@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
  * Date:    12/7/17
  * Email:   alirezat775@gmail.com
  */
+
 class CarouselView
 /**
  * @param context  current context, will be used to access resources
