@@ -4,8 +4,7 @@ import alirezat775.lib.carouselview.CarouselLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-
-class EndlessListener(private val carouselLayoutManager: CarouselLayoutManager) : RecyclerView.OnScrollListener() {
+abstract class EndlessListener(private val carouselLayoutManager: CarouselLayoutManager) : RecyclerView.OnScrollListener() {
 
     private val visibleThreshold = 5
     private var currentPage = 0
@@ -50,5 +49,12 @@ class EndlessListener(private val carouselLayoutManager: CarouselLayoutManager) 
         }
     }
 
+    fun resetState() {
+        this.currentPage = this.startingPageIndex
+        this.previousTotalItemCount = 0
+        this.loading = true
+    }
+
+    abstract fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView)
 
 }

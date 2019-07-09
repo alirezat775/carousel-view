@@ -51,6 +51,10 @@ class Carousel constructor(
         carouselView.listener = listener
     }
 
+    fun removeCarouselListener() {
+        carouselView.listener = null
+    }
+
     /**
      * @param scaleView enable scaleView item
      */
@@ -142,5 +146,7 @@ class Carousel constructor(
     fun scrollSpeed(scrollSpeed: Float) {
         getManager()?.setScrollSpeed(scrollSpeed)
     }
+
+
 
 }
