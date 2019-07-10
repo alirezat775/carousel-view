@@ -1,8 +1,10 @@
 package alirezat775.lib.carouselview
 
+import alirezat775.lib.carouselview.helper.EndlessListener
 import alirezat775.lib.carouselview.helper.ViewHelper
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * Author:  Alireza Tizfahm Fard
@@ -17,6 +19,7 @@ class Carousel constructor(
 ) {
 
     private var manager: CarouselLayoutManager? = null
+    private var carouselLazyLoadListener: CarouselLazyLoadListener? = null
 
     init {
         carouselView.layoutManager = getManager()
@@ -49,6 +52,33 @@ class Carousel constructor(
 
     fun addCarouselListener(listener: CarouselListener) {
         carouselView.listener = listener
+    }
+
+    fun removeCarouselListener() {
+        carouselView.listener = null
+    }
+
+    /**
+     * lazyLoad load more item with infinity scroll.
+     * for enable this feature should be pass true value in first parameter
+     * and pass child of CarouselLazyLoadListener for second parameter
+     * for disable this feature should be pass false value in first argument
+     * and pass null for second parameter
+     *
+     * @param lazy this flag enable or disable lazy loading view
+     * @param carouselLazyLoadListener listener when need call load more item
+     */
+    fun lazyLoad(lazy: Boolean, carouselLazyLoadListener: CarouselLazyLoadListener?) {
+        this.carouselLazyLoadListener = carouselLazyLoadListener
+
+        if (lazy)
+            carouselView.addOnScrollListener(object : EndlessListener(getManager()!!) {
+                override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
+                    carouselLazyLoadListener?.onLoadMore(page, totalItemsCount, view as CarouselView)
+                }
+            })
+        else
+            carouselView.clearOnScrollListeners()
     }
 
     /**
