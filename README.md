@@ -32,3 +32,11 @@ add to module build.gradle
 ```
 
 <img src="https://raw.githubusercontent.com/alirezat775/CarouselView/master/assets/demo.gif" width="200" height="400" />
+
+
+- [changelog](CHANGELOG)
+
+### contribution guidelines
+
+please commit in development branch and send a pull request to merge development branch.
+explain better in a commit message, don't remove class author and add your data in a header of class
