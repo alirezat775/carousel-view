@@ -18,6 +18,7 @@ abstract class CarouselAdapter : RecyclerView.Adapter<CarouselAdapter.CarouselVi
         const val ADD = 2
     }
 
+    private lateinit var recyclerView: RecyclerView
     private var enableSlider = false
     private var items: MutableList<CarouselModel> = ArrayList()
 
@@ -29,6 +30,16 @@ abstract class CarouselAdapter : RecyclerView.Adapter<CarouselAdapter.CarouselVi
 
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
     }
 
     /**
@@ -60,8 +71,10 @@ abstract class CarouselAdapter : RecyclerView.Adapter<CarouselAdapter.CarouselVi
      * @param item instance CarouselModel
      */
     private fun add(item: CarouselModel) {
-        notifyItemInserted(itemCount - 1)
-        getItems().add(item)
+        recyclerView.post {
+            notifyItemInserted(itemCount - 1)
+            getItems().add(item)
+        }
     }
 
     /**
