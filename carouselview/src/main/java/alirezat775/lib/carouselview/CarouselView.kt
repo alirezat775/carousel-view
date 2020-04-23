@@ -8,7 +8,6 @@ import android.view.VelocityTracker
 import android.view.View
 import androidx.annotation.IntDef
 import androidx.core.view.ViewCompat
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 
 /**
@@ -84,6 +83,11 @@ class CarouselView
         super.setAdapter(adapter)
         if (adapter!!.itemCount >= 0)
             initSnap()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        initSnap()
     }
 
     /**
@@ -264,7 +268,8 @@ class CarouselView
 
         if (firstVisibleItemPosition > -1) {
             val currentViewClosestToAnchor = manager.findViewByPosition(firstVisibleItemPosition)
-            var currentViewClosestToAnchorDistance = parentAnchor - getViewAnchor(currentViewClosestToAnchor)
+            var currentViewClosestToAnchorDistance =
+                parentAnchor - getViewAnchor(currentViewClosestToAnchor)
             var currentViewClosestToAnchorPosition = firstVisibleItemPosition
 
             for (i in firstVisibleItemPosition + 1..lastVisibleItemPosition) {

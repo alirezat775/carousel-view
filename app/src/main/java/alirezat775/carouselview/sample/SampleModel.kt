@@ -1,4 +1,4 @@
-package alirezat775.carouselview
+package alirezat775.carouselview.sample
 
 import alirezat775.lib.carouselview.CarouselModel
 
