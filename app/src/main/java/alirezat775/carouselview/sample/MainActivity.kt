@@ -1,5 +1,6 @@
-package alirezat775.carouselview
+package alirezat775.carouselview.sample
 
+import alirezat775.carouselview.R
 import alirezat775.lib.carouselview.Carousel
 import alirezat775.lib.carouselview.CarouselLazyLoadListener
 import alirezat775.lib.carouselview.CarouselListener
@@ -36,7 +37,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
-        adapter.setOnClickListener(object : SampleAdapter.OnClick {
+        adapter.setOnClickListener(object :
+            SampleAdapter.OnClick {
             override fun click(model: SampleModel) {
                 carousel.remove(model)
             }
@@ -65,7 +67,6 @@ class MainActivity : AppCompatActivity() {
         carousel.add(SampleModel(8))
         carousel.add(SampleModel(9))
         carousel.add(SampleModel(10))
-
 
     }
 }
