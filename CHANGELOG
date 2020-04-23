@@ -8,6 +8,11 @@ v 1.0.0 Released!
 - slider mode/ carousel mode
 - change scrolling speed
 
-v 1.0.1 Released!
+v 1.1.0 Released!
 
 - add lazy loading
+
+v 1.1.1 Released!
+
+- update dependecy
+- fix auto scroll in initialize
