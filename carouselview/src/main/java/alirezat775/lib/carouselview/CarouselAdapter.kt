@@ -4,6 +4,7 @@ import alirezat775.lib.carouselview.helper.ViewHelper
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
+import kotlin.math.roundToInt
 
 /**
  * Author:  Alireza Tizfahm Fard
@@ -23,8 +24,8 @@ abstract class CarouselAdapter : RecyclerView.Adapter<CarouselAdapter.CarouselVi
     private var items: MutableList<CarouselModel> = ArrayList()
 
     private fun imageOption(view: View) {
-        view.layoutParams.width = Math.round(ViewHelper.getScreenWidth().toDouble()).toInt()
-        view.layoutParams.height = Math.round(view.layoutParams.width * 0.70).toInt()
+        view.layoutParams.width = ViewHelper.getScreenWidth().toDouble().roundToInt()
+        view.layoutParams.height = (view.layoutParams.width * 0.70).roundToInt()
         view.requestLayout()
     }
 
@@ -71,10 +72,8 @@ abstract class CarouselAdapter : RecyclerView.Adapter<CarouselAdapter.CarouselVi
      * @param item instance CarouselModel
      */
     private fun add(item: CarouselModel) {
-        recyclerView.post {
-            notifyItemInserted(itemCount - 1)
-            getItems().add(item)
-        }
+        notifyItemInserted(itemCount - 1)
+        getItems().add(item)
     }
 
     /**
