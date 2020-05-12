@@ -211,7 +211,6 @@ class CarouselView
     override fun onScrollStateChanged(state: Int) {
         super.onScrollStateChanged(state)
         if (state == SCROLL_STATE_IDLE) {
-            scrolling(0)
             if (isAutoScroll) {
                 getScheduler()?.start()
             }
