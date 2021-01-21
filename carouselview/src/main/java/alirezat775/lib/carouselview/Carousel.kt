@@ -2,6 +2,7 @@ package alirezat775.lib.carouselview
 
 import alirezat775.lib.carouselview.helper.EndlessListener
 import alirezat775.lib.carouselview.helper.ViewHelper
+import android.content.Context
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
  */
 
 class Carousel constructor(
-    private var appCompatActivity: AppCompatActivity,
+    private var context: Context,
     @NonNull private var carouselView: CarouselView,
     @NonNull private var adapter: CarouselAdapter
 ) {
@@ -35,7 +36,7 @@ class Carousel constructor(
         @CarouselView.CarouselOrientation orientation: Int, reverseLayout: Boolean,
         enablePadding: Boolean = true
     ) {
-        manager = CarouselLayoutManager(appCompatActivity, orientation, reverseLayout)
+        manager = CarouselLayoutManager(context, orientation, reverseLayout)
         carouselView.layoutManager = manager
         val padding: Int
         when (orientation) {
